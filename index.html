@@ -30,6 +30,9 @@
       --amber:     #d97706;
       --amber-bg:  #fffbeb;
       --amber-bd:  #fde68a;
+      --blue:      #2563eb;
+      --blue-bg:   #eff6ff;
+      --blue-bd:   #bfdbfe;
       --sans: 'Figtree', sans-serif;
       --mono: 'DM Mono', monospace;
     }
@@ -56,6 +59,9 @@
       --amber:     #fbbf24;
       --amber-bg:  #1a0e00;
       --amber-bd:  #78350f;
+      --blue:      #60a5fa;
+      --blue-bg:   #0a1628;
+      --blue-bd:   #1e3a5f;
     }
     html { color-scheme: light; }
     html.dark { color-scheme: dark; }
@@ -92,13 +98,15 @@
       transition: all 0.3s;
     }
     .banner.all-ok   { background: var(--green-bg);  border-color: var(--green-bd); }
-    .banner.has-down { background: var(--red-bg);    border-color: var(--red-bd); }
+    .banner.has-down    { background: var(--red-bg);    border-color: var(--red-bd); }
+    .banner.maintenance { background: var(--blue-bg);  border-color: var(--blue-bd); }
     .banner-dot {
       width: 10px; height: 10px; border-radius: 50%;
       background: var(--muted2); flex-shrink: 0;
     }
     .all-ok  .banner-dot { background: var(--green); box-shadow: 0 0 0 3px var(--green-muted); animation: pulse 2.5s infinite; }
-    .has-down .banner-dot { background: var(--red); }
+    .has-down .banner-dot    { background: var(--red); }
+    .maintenance .banner-dot { background: var(--blue); }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
     .banner-body { flex: 1; }
     .banner-title { font-size: 15px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
@@ -132,7 +140,8 @@
     }
     .status-pill.operational { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
     .status-pill.down        { background: var(--red-bg);   border-color: var(--red-bd);   color: var(--red); }
-    .status-pill.unknown     { background: var(--surface2); border-color: var(--border);   color: var(--muted); }
+    .status-pill.unknown      { background: var(--surface2); border-color: var(--border);   color: var(--muted); }
+    .status-pill.maintenance  { background: var(--blue-bg);  border-color: var(--blue-bd);  color: var(--blue); }
     .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
     /* ── STAT PILLS ── */
@@ -161,7 +170,9 @@
     .bar.down:hover { opacity: 1; }
     .bar.partial { background: var(--amber); opacity: 0.8; }
     .bar.partial:hover { opacity: 1; }
-    .bar.empty   { background: var(--border); opacity: 0.35; }
+    .bar.empty       { background: var(--border); opacity: 0.35; }
+    .bar.maintenance { background: var(--blue); opacity: 0.7; }
+    .bar.maintenance:hover { opacity: 1; }
     .bars-labels {
       display: flex; justify-content: space-between;
       font-size: 10px; color: var(--muted2); font-family: var(--mono);
@@ -280,6 +291,7 @@
         allOk:   ok === total,
         anyOk:   ok > 0,
         sample:  slice[0],
+        slice,
       });
     }
 
@@ -290,7 +302,8 @@
 
     return padded.map(b => {
       if (!b) return `<div class="bar empty" title="No data"></div>`;
-      const cls   = b.allOk ? 'ok' : b.anyOk ? 'partial' : 'down';
+      const allMaintenance = slice.every(e => e.maintenance);
+      const cls   = allMaintenance ? 'maintenance' : b.allOk ? 'ok' : b.anyOk ? 'partial' : 'down';
       const label = b.allOk
         ? `Operational — ${fmt(b.sample?.latency)}`
         : b.anyOk ? 'Partial outage'
@@ -303,7 +316,7 @@
   function renderService(svc) {
     const pct       = uptimePct(svc.history);
     const statusCls = svc.status || 'unknown';
-    const statusTxt = { operational: 'Operational', down: 'Down', unknown: 'Unknown' }[statusCls] || 'Unknown';
+    const statusTxt = { operational: 'Operational', down: 'Down', unknown: 'Unknown', maintenance: 'Maintenance' }[statusCls] || 'Unknown';
     const latency   = svc.history?.[0]?.latency ?? svc.latency;
 
     return `
@@ -342,12 +355,15 @@
     const allOk   = services.every(s => s.status === 'operational');
     const banner  = document.getElementById('banner');
 
-    banner.className = 'banner ' + (anyDown ? 'has-down' : allOk ? 'all-ok' : '');
+    const anyMaintenance = services.some(s => s.status === 'maintenance');
+    banner.className = 'banner ' + (anyDown ? 'has-down' : anyMaintenance ? 'maintenance' : allOk ? 'all-ok' : '');
     document.getElementById('banner-title').textContent = anyDown
       ? 'Some systems are experiencing issues'
+      : anyMaintenance ? 'Scheduled maintenance in progress'
       : allOk ? 'All systems operational' : 'Status unknown';
     document.getElementById('banner-sub').textContent = anyDown
       ? services.filter(s => s.status === 'down').map(s => s.name).join(', ') + ' — investigating'
+      : anyMaintenance ? services.filter(s => s.status === 'maintenance').map(s => s.name).join(', ') + ' — back soon'
       : 'Everything is running smoothly.';
 
     if (generated && generated !== '1970-01-01T00:00:00.000Z') {
