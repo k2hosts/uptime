@@ -132,6 +132,7 @@
     .hbar.ok      { background: var(--green); }
     .hbar.down    { background: var(--red); }
     .hbar.unknown { background: var(--border2); }
+    .hbar.partial { background: var(--amber); }
 
     /* ── UPTIME % ── */
     .uptime-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
@@ -182,8 +183,8 @@
 </main>
 
 <footer>
-  Powered by <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> ·
-  Checks every 10 minutes ·
+  Powered by a persistent Node.js monitor ·
+  Checks every minute ·
   <a href="https://bareai.oops.wtf" target="_blank">bareai.oops.wtf</a>
 </footer>
 
@@ -230,24 +231,36 @@
   // ── RENDER ────────────────────────────────────────────
 
   /**
-   * Renders a single row of history bars.
-   * We show up to 90 bars (representing ~15h at 10min intervals, or 7 days compressed).
-   * Each bar represents one check — green = ok, red = down, gray = unknown/no data.
+   * Renders history bars bucketed into ~1hr windows across 7 days.
+   * 168 bars = 7 days × 24 hours. Each bar = avg of ~60 one-minute checks.
+   * Green = all ok, red = any down, grey = no data.
    */
   function renderHistoryBars(history) {
-    const MAX_BARS = 90;
-    // Pad with unknown entries at the front if we have fewer than MAX_BARS
+    const MAX_BARS    = 168;
+    const BUCKET_SIZE = Math.max(1, Math.ceil(history.length / MAX_BARS));
+
+    const buckets = [];
+    for (let i = 0; i < history.length; i += BUCKET_SIZE) {
+      const slice  = history.slice(i, i + BUCKET_SIZE);
+      const allOk  = slice.every(e => e.ok);
+      const anyOk  = slice.some(e => e.ok);
+      const sample = slice[0];
+      buckets.push({ allOk, anyOk, sample });
+    }
+
     const padded = [
-      ...Array(Math.max(0, MAX_BARS - history.length)).fill(null),
-      ...history.slice(0, MAX_BARS).reverse(), // oldest left, newest right
+      ...Array(Math.max(0, MAX_BARS - buckets.length)).fill(null),
+      ...buckets.reverse(),
     ];
 
-    return padded.map((entry, i) => {
-      if (!entry) return `<div class="hbar unknown" title="No data"></div>`;
-      const cls   = entry.ok ? 'ok' : 'down';
-      const label = entry.ok
-        ? `Operational — ${formatLatency(entry.latency)}\n${new Date(entry.ts).toLocaleString()}`
-        : `Down — HTTP ${entry.status || 'timeout'}\n${new Date(entry.ts).toLocaleString()}`;
+    return padded.map(bucket => {
+      if (!bucket) return `<div class="hbar unknown" title="No data"></div>`;
+      const cls   = bucket.allOk ? 'ok' : bucket.anyOk ? 'partial' : 'down';
+      const label = bucket.allOk
+        ? `Operational — ${formatLatency(bucket.sample?.latency)}`
+        : bucket.anyOk
+          ? `Partial outage`
+          : `Down — HTTP ${bucket.sample?.status || 'timeout'}`;
       return `<div class="hbar ${cls}" title="${label}"></div>`;
     }).join('');
   }
