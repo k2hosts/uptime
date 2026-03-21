@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-21T22:02:07.904Z",
+  "generated": "2026-03-21T22:03:07.955Z",
   "services": [
     {
       "id": "playground",
@@ -8,8 +8,15 @@
       "public_url": true,
       "status": "operational",
       "maintenance": false,
-      "latency": 33,
+      "latency": 35,
       "history": [
+        {
+          "ts": "2026-03-21T22:03:07.955Z",
+          "ok": true,
+          "maintenance": false,
+          "status": 200,
+          "latency": 35
+        },
         {
           "ts": "2026-03-21T22:02:07.904Z",
           "ok": true,
@@ -4623,8 +4630,15 @@
       "public_url": false,
       "status": "maintenance",
       "maintenance": true,
-      "latency": 58,
+      "latency": 84,
       "history": [
+        {
+          "ts": "2026-03-21T22:03:07.955Z",
+          "ok": true,
+          "maintenance": true,
+          "status": 503,
+          "latency": 84
+        },
         {
           "ts": "2026-03-21T22:02:07.904Z",
           "ok": true,
