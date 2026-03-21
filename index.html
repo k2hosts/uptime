@@ -302,7 +302,7 @@
 
     return padded.map(b => {
       if (!b) return `<div class="bar empty" title="No data"></div>`;
-      const allMaintenance = slice.every(e => e.maintenance);
+      const allMaintenance = b.slice.every(e => e.maintenance);
       const cls   = allMaintenance ? 'maintenance' : b.allOk ? 'ok' : b.anyOk ? 'partial' : 'down';
       const label = b.allOk
         ? `Operational — ${fmt(b.sample?.latency)}`
