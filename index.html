@@ -147,20 +147,21 @@
     /* ── HISTORY BARS ── */
     .history { margin-bottom: 14px; }
     .bars {
-      display: flex; gap: 2px; height: 32px; align-items: stretch;
+      display: flex; gap: 2px; height: 32px; align-items: flex-end;
       margin-bottom: 6px;
     }
     .bar {
-      flex: 1; border-radius: 3px; min-width: 2px;
+      flex: 1; border-radius: 2px; min-width: 2px;
+      height: 100%;
       cursor: default; transition: opacity 0.15s;
-      position: relative;
     }
-    .bar:hover { opacity: 0.7; }
-    .bar.ok      { background: var(--green); opacity: 0.7; }
+    .bar.ok      { background: var(--green); opacity: 0.65; }
     .bar.ok:hover { opacity: 1; }
     .bar.down    { background: var(--red); opacity: 0.9; }
+    .bar.down:hover { opacity: 1; }
     .bar.partial { background: var(--amber); opacity: 0.8; }
-    .bar.empty   { background: var(--surface2); }
+    .bar.partial:hover { opacity: 1; }
+    .bar.empty   { background: var(--border); opacity: 0.35; }
     .bars-labels {
       display: flex; justify-content: space-between;
       font-size: 10px; color: var(--muted2); font-family: var(--mono);
