@@ -13,6 +13,7 @@
       "id": "worker",
       "name": "BareAI API Worker",
       "url": "https://oops-proxy.deandre6156.workers.dev",
+      "public_url": false,
       "status": "unknown",
       "latency": null,
       "history": []
