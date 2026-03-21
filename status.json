@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-21T11:05:45.038Z",
+  "generated": "2026-03-21T11:06:45.089Z",
   "services": [
     {
       "id": "playground",
@@ -9,6 +9,12 @@
       "status": "operational",
       "latency": 31,
       "history": [
+        {
+          "ts": "2026-03-21T11:06:45.089Z",
+          "ok": true,
+          "status": 200,
+          "latency": 31
+        },
         {
           "ts": "2026-03-21T11:05:45.038Z",
           "ok": true,
@@ -41,8 +47,14 @@
       "url": "https://oops-proxy.deandre6156.workers.dev",
       "public_url": false,
       "status": "operational",
-      "latency": 68,
+      "latency": 61,
       "history": [
+        {
+          "ts": "2026-03-21T11:06:45.089Z",
+          "ok": true,
+          "status": 401,
+          "latency": 61
+        },
         {
           "ts": "2026-03-21T11:05:45.038Z",
           "ok": true,
