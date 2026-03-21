@@ -111,11 +111,12 @@ jobs:
               const history = [entry, ...(historyMap[service.id] || [])].slice(0, MAX_HISTORY);
 
               results.push({
-                id:      service.id,
-                name:    service.name,
-                url:     service.url,
-                status:  ok ? 'operational' : 'down',
-                latency: latency,
+                id:         service.id,
+                name:       service.name,
+                url:        service.url,
+                public_url: service.public_url !== undefined ? service.public_url : true,
+                status:     ok ? 'operational' : 'down',
+                latency:    latency,
                 history,
               });
 
