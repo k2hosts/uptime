@@ -263,7 +263,7 @@
         <div class="service-top">
           <div>
             <div class="service-name">${svc.name}</div>
-            <div class="service-url">${svc.url}</div>
+            ${svc.public_url !== false ? `<div class="service-url">${svc.url}</div>` : ''}
           </div>
           <div class="service-status">
             <div class="status-dot ${svc.status}"></div>
