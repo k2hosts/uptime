@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Status — BareAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #ffffff;
+      --surface:   #f8f8f9;
+      --surface2:  #f1f1f4;
+      --border:    #e4e4e9;
+      --border2:   #d0d0d8;
+      --text:      #0f0f14;
+      --text2:     #3a3a46;
+      --muted:     #7a7a8c;
+      --muted2:    #9a9aac;
+      --accent:    #5A0F85;
+      --accent-lt: #7a1fb5;
+      --accent-bg: #f5eefb;
+      --green:     #16a34a;
+      --green-bg:  #f0fdf4;
+      --green-bd:  #bbf7d0;
+      --red:       #dc2626;
+      --red-bg:    #fef2f2;
+      --red-bd:    #fecaca;
+      --amber:     #d97706;
+      --amber-bg:  #fffbeb;
+      --amber-bd:  #fde68a;
+      --sans: 'Figtree', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+    html.dark {
+      --bg:        #0d0d10;
+      --surface:   #141418;
+      --surface2:  #1c1c22;
+      --border:    #26262e;
+      --border2:   #32323c;
+      --text:      #f0eff4;
+      --text2:     #b8b6c4;
+      --muted:     #6e6d7a;
+      --muted2:    #55545f;
+      --accent:    #9b4dca;
+      --accent-lt: #b468e0;
+      --accent-bg: #1e1028;
+      --green:     #4ade80;
+      --green-bg:  #052e16;
+      --green-bd:  #166534;
+      --red:       #f87171;
+      --red-bg:    #450a0a;
+      --red-bd:    #991b1b;
+      --amber:     #fbbf24;
+      --amber-bg:  #451a03;
+      --amber-bd:  #92400e;
+    }
+    html { color-scheme: light; }
+    html.dark { color-scheme: dark; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+    /* ── NAV ── */
+    nav { border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 10; }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-logo { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+    .nav-badge { font-size: 11px; font-weight: 500; background: var(--accent-bg); color: var(--accent); padding: 2px 8px; border-radius: 100px; font-family: var(--mono); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-link { font-size: 12px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+    .nav-link:hover { color: var(--accent); }
+    .theme-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; color: var(--muted); transition: color 0.15s; }
+    .theme-btn:hover { color: var(--text); }
+    .icon-sun { display: none; } .icon-moon { display: block; }
+    html.dark .icon-sun { display: block; } html.dark .icon-moon { display: none; }
+
+    /* ── LAYOUT ── */
+    main { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── OVERALL STATUS BANNER ── */
+    .status-banner {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 24px; border-radius: 12px; margin-bottom: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .status-banner.all-ok  { background: var(--green-bg);  border-color: var(--green-bd); }
+    .status-banner.has-down { background: var(--red-bg);   border-color: var(--red-bd); }
+    .status-banner.loading  { background: var(--surface);  border-color: var(--border); }
+    .banner-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
+    .all-ok  .banner-dot { background: var(--green); animation: pulse-green 2s infinite; }
+    .has-down .banner-dot { background: var(--red); }
+    @keyframes pulse-green { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .banner-text { flex: 1; }
+    .banner-title { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+    .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+    .banner-updated { font-size: 11px; color: var(--muted2); font-family: var(--mono); flex-shrink: 0; }
+
+    /* ── SECTION HEADER ── */
+    .section-header { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+
+    /* ── SERVICE CARD ── */
+    .service-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 10px; }
+    .service-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .service-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .service-url { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+    .service-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-dot.operational { background: var(--green); }
+    .status-dot.down        { background: var(--red); }
+    .status-dot.unknown     { background: var(--muted2); }
+    .status-text.operational { color: var(--green); }
+    .status-text.down        { color: var(--red); }
+    .status-text.unknown     { color: var(--muted2); }
+
+    /* ── LATENCY ── */
+    .service-meta { display: flex; gap: 16px; margin-bottom: 14px; }
+    .meta-item { font-size: 11px; font-family: var(--mono); color: var(--muted2); }
+    .meta-item span { color: var(--text2); font-weight: 500; }
+
+    /* ── HISTORY BAR ── */
+    .history-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .history-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted2); font-family: var(--mono); }
+    .history-bars { display: flex; gap: 2px; align-items: flex-end; height: 28px; }
+    .hbar {
+      flex: 1; min-width: 2px; border-radius: 2px;
+      cursor: pointer; transition: opacity 0.15s;
+      position: relative;
+    }
+    .hbar:hover { opacity: 0.75; }
+    .hbar.ok      { background: var(--green); }
+    .hbar.down    { background: var(--red); }
+    .hbar.unknown { background: var(--border2); }
+
+    /* ── UPTIME % ── */
+    .uptime-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .uptime-pct { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+    .uptime-pct.high   { color: var(--green); }
+    .uptime-pct.medium { color: var(--amber); }
+    .uptime-pct.low    { color: var(--red); }
+    .uptime-label { font-size: 11px; color: var(--muted2); }
+
+    /* ── FOOTER ── */
+    footer { text-align: center; padding: 32px 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted2); font-family: var(--mono); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SKELETON ── */
+    .skeleton { background: var(--surface2); border-radius: 4px; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%,100%{opacity:0.6} 50%{opacity:1} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="https://bareai.oops.wtf" class="nav-logo">BareAI</a>
+    <span class="nav-badge">status</span>
+  </div>
+  <div class="nav-right">
+    <a href="https://bareai.oops.wtf/playground" class="nav-link">Playground →</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="status-banner loading" id="banner">
+    <div class="banner-dot"></div>
+    <div class="banner-text">
+      <div class="banner-title" id="banner-title">Checking systems…</div>
+      <div class="banner-sub" id="banner-sub">Loading status data</div>
+    </div>
+    <div class="banner-updated" id="banner-updated"></div>
+  </div>
+
+  <div class="section-header">Services</div>
+  <div id="services"></div>
+</main>
+
+<footer>
+  Powered by <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> ·
+  Checks every 10 minutes ·
+  <a href="https://bareai.oops.wtf" target="_blank">bareai.oops.wtf</a>
+</footer>
+
+<script>
+  // ── THEME ─────────────────────────────────────────────
+  (function() {
+    const saved = localStorage.getItem('bareai-theme');
+    if (saved !== 'light') document.documentElement.classList.add('dark');
+  })();
+  function toggleTheme() {
+    const d = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('bareai-theme', d ? 'dark' : 'light');
+  }
+
+  // ── HELPERS ───────────────────────────────────────────
+  function timeAgo(isoString) {
+    const diff = Date.now() - new Date(isoString).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)  return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)  return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
+
+  function formatLatency(ms) {
+    if (ms === null || ms === undefined) return '—';
+    return ms + 'ms';
+  }
+
+  function uptimePct(history) {
+    if (!history || history.length === 0) return null;
+    const ok = history.filter(h => h.ok).length;
+    return ((ok / history.length) * 100).toFixed(2);
+  }
+
+  function uptimeClass(pct) {
+    if (pct === null) return '';
+    if (pct >= 99)  return 'high';
+    if (pct >= 95)  return 'medium';
+    return 'low';
+  }
+
+  // ── RENDER ────────────────────────────────────────────
+
+  /**
+   * Renders a single row of history bars.
+   * We show up to 90 bars (representing ~15h at 10min intervals, or 7 days compressed).
+   * Each bar represents one check — green = ok, red = down, gray = unknown/no data.
+   */
+  function renderHistoryBars(history) {
+    const MAX_BARS = 90;
+    // Pad with unknown entries at the front if we have fewer than MAX_BARS
+    const padded = [
+      ...Array(Math.max(0, MAX_BARS - history.length)).fill(null),
+      ...history.slice(0, MAX_BARS).reverse(), // oldest left, newest right
+    ];
+
+    return padded.map((entry, i) => {
+      if (!entry) return `<div class="hbar unknown" title="No data"></div>`;
+      const cls   = entry.ok ? 'ok' : 'down';
+      const label = entry.ok
+        ? `Operational — ${formatLatency(entry.latency)}\n${new Date(entry.ts).toLocaleString()}`
+        : `Down — HTTP ${entry.status || 'timeout'}\n${new Date(entry.ts).toLocaleString()}`;
+      return `<div class="hbar ${cls}" title="${label}"></div>`;
+    }).join('');
+  }
+
+  function renderService(svc) {
+    const statusLabel = { operational: 'Operational', down: 'Down', unknown: 'Unknown' }[svc.status] || 'Unknown';
+    const pct         = uptimePct(svc.history);
+    const pctDisplay  = pct !== null ? pct + '%' : '—';
+    const latestLatency = svc.history[0]?.latency ?? svc.latency;
+
+    return `
+      <div class="service-card">
+        <div class="service-top">
+          <div>
+            <div class="service-name">${svc.name}</div>
+            <div class="service-url">${svc.url}</div>
+          </div>
+          <div class="service-status">
+            <div class="status-dot ${svc.status}"></div>
+            <span class="status-text ${svc.status}">${statusLabel}</span>
+          </div>
+        </div>
+        <div class="service-meta">
+          <div class="meta-item">Latency <span>${formatLatency(latestLatency)}</span></div>
+          <div class="meta-item">Checks <span>${svc.history.length}</span></div>
+        </div>
+        <div class="history-wrap">
+          <div class="history-bars">${renderHistoryBars(svc.history)}</div>
+          <div class="history-label"><span>7 days ago</span><span>now</span></div>
+        </div>
+        <div class="uptime-row">
+          <span class="uptime-label">7-day uptime</span>
+          <span class="uptime-pct ${uptimeClass(pct ? parseFloat(pct) : null)}">${pctDisplay}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderBanner(services, generated) {
+    const banner  = document.getElementById('banner');
+    const title   = document.getElementById('banner-title');
+    const sub     = document.getElementById('banner-sub');
+    const updated = document.getElementById('banner-updated');
+
+    const anyDown = services.some(s => s.status === 'down');
+    const allOk   = services.every(s => s.status === 'operational');
+
+    banner.className = 'status-banner ' + (anyDown ? 'has-down' : allOk ? 'all-ok' : 'loading');
+    title.textContent = anyDown
+      ? 'Some systems are experiencing issues'
+      : allOk
+        ? 'All systems operational'
+        : 'Status unknown';
+
+    sub.textContent = anyDown
+      ? services.filter(s => s.status === 'down').map(s => s.name).join(', ') + ' — investigating'
+      : 'Everything is running smoothly.';
+
+    if (generated && generated !== '1970-01-01T00:00:00.000Z') {
+      updated.textContent = 'Updated ' + timeAgo(generated);
+    }
+  }
+
+  // ── FETCH & RENDER ────────────────────────────────────
+  async function load() {
+    try {
+      // Cache-bust so GitHub Pages always serves fresh data
+      const res  = await fetch('status.json?t=' + Date.now());
+      const data = await res.json();
+
+      renderBanner(data.services, data.generated);
+      document.getElementById('services').innerHTML = data.services.map(renderService).join('');
+
+      // Refresh every 5 minutes so the page auto-updates without a reload
+      setTimeout(load, 5 * 60 * 1000);
+    } catch (err) {
+      document.getElementById('banner-title').textContent = 'Could not load status data';
+      document.getElementById('banner-sub').textContent   = 'Try refreshing the page';
+      console.error('Failed to load status.json:', err);
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>
