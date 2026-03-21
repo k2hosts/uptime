@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-21T11:22:45.819Z",
+  "generated": "2026-03-21T11:23:45.869Z",
   "services": [
     {
       "id": "playground",
@@ -7,8 +7,14 @@
       "url": "https://bareai.oops.wtf",
       "public_url": true,
       "status": "operational",
-      "latency": 30,
+      "latency": 115,
       "history": [
+        {
+          "ts": "2026-03-21T11:23:45.869Z",
+          "ok": true,
+          "status": 200,
+          "latency": 115
+        },
         {
           "ts": "2026-03-21T11:22:45.819Z",
           "ok": true,
@@ -143,8 +149,14 @@
       "url": "https://oops-proxy.deandre6156.workers.dev",
       "public_url": false,
       "status": "operational",
-      "latency": 91,
+      "latency": 59,
       "history": [
+        {
+          "ts": "2026-03-21T11:23:45.869Z",
+          "ok": true,
+          "status": 401,
+          "latency": 59
+        },
         {
           "ts": "2026-03-21T11:22:45.819Z",
           "ok": true,
