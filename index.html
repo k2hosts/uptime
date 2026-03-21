@@ -23,6 +23,7 @@
       --green:     #16a34a;
       --green-bg:  #f0fdf4;
       --green-bd:  #bbf7d0;
+      --green-muted: #dcfce7;
       --red:       #dc2626;
       --red-bg:    #fef2f2;
       --red-bd:    #fecaca;
@@ -46,14 +47,15 @@
       --accent-lt: #b468e0;
       --accent-bg: #1e1028;
       --green:     #4ade80;
-      --green-bg:  #052e16;
-      --green-bd:  #166534;
+      --green-bg:  #0a1f12;
+      --green-bd:  #14532d;
+      --green-muted: #052e16;
       --red:       #f87171;
-      --red-bg:    #450a0a;
-      --red-bd:    #991b1b;
+      --red-bg:    #1a0505;
+      --red-bd:    #7f1d1d;
       --amber:     #fbbf24;
-      --amber-bg:  #451a03;
-      --amber-bd:  #92400e;
+      --amber-bg:  #1a0e00;
+      --amber-bd:  #78350f;
     }
     html { color-scheme: light; }
     html.dark { color-scheme: dark; }
@@ -62,10 +64,15 @@
     body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; min-height: 100vh; }
 
     /* ── NAV ── */
-    nav { border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 10; }
+    nav {
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg); position: sticky; top: 0; z-index: 10;
+    }
     .nav-left { display: flex; align-items: center; gap: 10px; }
     .nav-logo { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
-    .nav-badge { font-size: 11px; font-weight: 500; background: var(--accent-bg); color: var(--accent); padding: 2px 8px; border-radius: 100px; font-family: var(--mono); }
+    .nav-badge { font-size: 11px; font-weight: 500; background: var(--accent-bg); color: var(--accent); padding: 2px 8px; border-radius: 100px; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-link { font-size: 12px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
     .nav-link:hover { color: var(--accent); }
@@ -75,81 +82,111 @@
     html.dark .icon-sun { display: block; } html.dark .icon-moon { display: none; }
 
     /* ── LAYOUT ── */
-    main { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+    main { max-width: 680px; margin: 0 auto; padding: 52px 24px 80px; }
 
-    /* ── OVERALL STATUS BANNER ── */
-    .status-banner {
-      display: flex; align-items: center; gap: 14px;
-      padding: 20px 24px; border-radius: 12px; margin-bottom: 40px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      transition: background 0.2s, border-color 0.2s;
+    /* ── BANNER ── */
+    .banner {
+      display: flex; align-items: center; gap: 16px;
+      padding: 22px 24px; border-radius: 14px; margin-bottom: 48px;
+      border: 1px solid var(--border); background: var(--surface);
+      transition: all 0.3s;
     }
-    .status-banner.all-ok  { background: var(--green-bg);  border-color: var(--green-bd); }
-    .status-banner.has-down { background: var(--red-bg);   border-color: var(--red-bd); }
-    .status-banner.loading  { background: var(--surface);  border-color: var(--border); }
-    .banner-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
-    .all-ok  .banner-dot { background: var(--green); animation: pulse-green 2s infinite; }
+    .banner.all-ok   { background: var(--green-bg);  border-color: var(--green-bd); }
+    .banner.has-down { background: var(--red-bg);    border-color: var(--red-bd); }
+    .banner-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--muted2); flex-shrink: 0;
+    }
+    .all-ok  .banner-dot { background: var(--green); box-shadow: 0 0 0 3px var(--green-muted); animation: pulse 2.5s infinite; }
     .has-down .banner-dot { background: var(--red); }
-    @keyframes pulse-green { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    .banner-text { flex: 1; }
-    .banner-title { font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
-    .banner-sub { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
-    .banner-updated { font-size: 11px; color: var(--muted2); font-family: var(--mono); flex-shrink: 0; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+    .banner-body { flex: 1; }
+    .banner-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+    .banner-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .banner-time { font-size: 11px; color: var(--muted2); font-family: var(--mono); flex-shrink: 0; }
 
-    /* ── SECTION HEADER ── */
-    .section-header { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    /* ── SECTION ── */
+    .section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted2);
+      margin-bottom: 10px;
+    }
 
     /* ── SERVICE CARD ── */
-    .service-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 10px; }
-    .service-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-    .service-name { font-size: 14px; font-weight: 600; color: var(--text); }
-    .service-url { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
-    .service-status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .status-dot.operational { background: var(--green); }
-    .status-dot.down        { background: var(--red); }
-    .status-dot.unknown     { background: var(--muted2); }
-    .status-text.operational { color: var(--green); }
-    .status-text.down        { color: var(--red); }
-    .status-text.unknown     { color: var(--muted2); }
+    .card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 22px; margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: var(--border2); }
 
-    /* ── LATENCY ── */
-    .service-meta { display: flex; gap: 16px; margin-bottom: 14px; }
-    .meta-item { font-size: 11px; font-family: var(--mono); color: var(--muted2); }
-    .meta-item span { color: var(--text2); font-weight: 500; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .card-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .card-url  { font-size: 11px; color: var(--muted2); font-family: var(--mono); margin-top: 3px; }
 
-    /* ── HISTORY BAR ── */
-    .history-wrap { display: flex; flex-direction: column; gap: 4px; }
-    .history-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted2); font-family: var(--mono); }
-    .history-bars { display: flex; gap: 2px; align-items: flex-end; height: 28px; }
-    .hbar {
-      flex: 1; min-width: 2px; border-radius: 2px;
-      cursor: pointer; transition: opacity 0.15s;
+    .status-pill {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 500; padding: 4px 10px;
+      border-radius: 100px; border: 1px solid;
+      flex-shrink: 0;
+    }
+    .status-pill.operational { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+    .status-pill.down        { background: var(--red-bg);   border-color: var(--red-bd);   color: var(--red); }
+    .status-pill.unknown     { background: var(--surface2); border-color: var(--border);   color: var(--muted); }
+    .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* ── STAT PILLS ── */
+    .stats { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    .stat {
+      font-size: 11px; font-family: var(--mono);
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted); padding: 3px 10px; border-radius: 100px;
+    }
+    .stat strong { color: var(--text2); font-weight: 500; }
+
+    /* ── HISTORY BARS ── */
+    .history { margin-bottom: 14px; }
+    .bars {
+      display: flex; gap: 2px; height: 32px; align-items: stretch;
+      margin-bottom: 6px;
+    }
+    .bar {
+      flex: 1; border-radius: 3px; min-width: 2px;
+      cursor: default; transition: opacity 0.15s;
       position: relative;
     }
-    .hbar:hover { opacity: 0.75; }
-    .hbar.ok      { background: var(--green); }
-    .hbar.down    { background: var(--red); }
-    .hbar.unknown { background: var(--border2); }
-    .hbar.partial { background: var(--amber); }
+    .bar:hover { opacity: 0.7; }
+    .bar.ok      { background: var(--green); opacity: 0.7; }
+    .bar.ok:hover { opacity: 1; }
+    .bar.down    { background: var(--red); opacity: 0.9; }
+    .bar.partial { background: var(--amber); opacity: 0.8; }
+    .bar.empty   { background: var(--surface2); }
+    .bars-labels {
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: var(--muted2); font-family: var(--mono);
+    }
 
-    /* ── UPTIME % ── */
-    .uptime-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-    .uptime-pct { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+    /* ── UPTIME ROW ── */
+    .uptime-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .uptime-label { font-size: 12px; color: var(--muted); }
+    .uptime-pct   { font-size: 13px; font-weight: 600; font-family: var(--mono); }
     .uptime-pct.high   { color: var(--green); }
     .uptime-pct.medium { color: var(--amber); }
     .uptime-pct.low    { color: var(--red); }
-    .uptime-label { font-size: 11px; color: var(--muted2); }
+    .uptime-pct.none   { color: var(--muted2); }
 
     /* ── FOOTER ── */
-    footer { text-align: center; padding: 32px 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted2); font-family: var(--mono); }
+    footer {
+      text-align: center; padding: 28px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--muted2); font-family: var(--mono);
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
     footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-
-    /* ── SKELETON ── */
-    .skeleton { background: var(--surface2); border-radius: 4px; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0%,100%{opacity:0.6} 50%{opacity:1} }
+    .footer-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border2); }
   </style>
 </head>
 <body>
@@ -169,30 +206,31 @@
 </nav>
 
 <main>
-  <div class="status-banner loading" id="banner">
+  <div class="banner loading" id="banner">
     <div class="banner-dot"></div>
-    <div class="banner-text">
+    <div class="banner-body">
       <div class="banner-title" id="banner-title">Checking systems…</div>
       <div class="banner-sub" id="banner-sub">Loading status data</div>
     </div>
-    <div class="banner-updated" id="banner-updated"></div>
+    <div class="banner-time" id="banner-time"></div>
   </div>
 
-  <div class="section-header">Services</div>
+  <div class="section-label">Services</div>
   <div id="services"></div>
 </main>
 
 <footer>
-  Powered by a persistent Node.js monitor ·
-  Checks every minute ·
-  <a href="https://bareai.oops.wtf" target="_blank">bareai.oops.wtf</a>
+  <span>Checks every minute</span>
+  <div class="footer-dot"></div>
+  <span><a href="https://bareai.oops.wtf">bareai.oops.wtf</a></span>
+  <div class="footer-dot"></div>
+  <span id="footer-time"></span>
 </footer>
 
 <script>
   // ── THEME ─────────────────────────────────────────────
   (function() {
-    const saved = localStorage.getItem('bareai-theme');
-    if (saved !== 'light') document.documentElement.classList.add('dark');
+    if (localStorage.getItem('bareai-theme') !== 'light') document.documentElement.classList.add('dark');
   })();
   function toggleTheme() {
     const d = document.documentElement.classList.toggle('dark');
@@ -200,52 +238,48 @@
   }
 
   // ── HELPERS ───────────────────────────────────────────
-  function timeAgo(isoString) {
-    const diff = Date.now() - new Date(isoString).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1)  return 'just now';
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24)  return `${hrs}h ago`;
-    return `${Math.floor(hrs / 24)}d ago`;
+  function timeAgo(iso) {
+    const diff = Date.now() - new Date(iso).getTime();
+    const s = Math.floor(diff / 1000);
+    if (s < 10)  return 'just now';
+    if (s < 60)  return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60)  return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24)  return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
   }
 
-  function formatLatency(ms) {
-    if (ms === null || ms === undefined) return '—';
-    return ms + 'ms';
-  }
+  function fmt(ms) { return ms != null ? ms + 'ms' : '—'; }
 
   function uptimePct(history) {
-    if (!history || history.length === 0) return null;
-    const ok = history.filter(h => h.ok).length;
-    return ((ok / history.length) * 100).toFixed(2);
+    if (!history?.length) return null;
+    return ((history.filter(h => h.ok).length / history.length) * 100).toFixed(2);
   }
 
   function uptimeClass(pct) {
-    if (pct === null) return '';
-    if (pct >= 99)  return 'high';
-    if (pct >= 95)  return 'medium';
+    if (pct === null) return 'none';
+    const n = parseFloat(pct);
+    if (n >= 99) return 'high';
+    if (n >= 95) return 'medium';
     return 'low';
   }
 
-  // ── RENDER ────────────────────────────────────────────
-
-  /**
-   * Renders history bars bucketed into ~1hr windows across 7 days.
-   * 168 bars = 7 days × 24 hours. Each bar = avg of ~60 one-minute checks.
-   * Green = all ok, red = any down, grey = no data.
-   */
-  function renderHistoryBars(history) {
-    const MAX_BARS    = 168;
+  // ── HISTORY BARS ──────────────────────────────────────
+  function buildBars(history) {
+    const MAX_BARS    = 168; // 7 days × 24 hourly buckets
     const BUCKET_SIZE = Math.max(1, Math.ceil(history.length / MAX_BARS));
 
     const buckets = [];
     for (let i = 0; i < history.length; i += BUCKET_SIZE) {
-      const slice  = history.slice(i, i + BUCKET_SIZE);
-      const allOk  = slice.every(e => e.ok);
-      const anyOk  = slice.some(e => e.ok);
-      const sample = slice[0];
-      buckets.push({ allOk, anyOk, sample });
+      const slice = history.slice(i, i + BUCKET_SIZE);
+      const ok    = slice.filter(e => e.ok).length;
+      const total = slice.length;
+      buckets.push({
+        allOk:   ok === total,
+        anyOk:   ok > 0,
+        sample:  slice[0],
+      });
     }
 
     const padded = [
@@ -253,92 +287,86 @@
       ...buckets.reverse(),
     ];
 
-    return padded.map(bucket => {
-      if (!bucket) return `<div class="hbar unknown" title="No data"></div>`;
-      const cls   = bucket.allOk ? 'ok' : bucket.anyOk ? 'partial' : 'down';
-      const label = bucket.allOk
-        ? `Operational — ${formatLatency(bucket.sample?.latency)}`
-        : bucket.anyOk
-          ? `Partial outage`
-          : `Down — HTTP ${bucket.sample?.status || 'timeout'}`;
-      return `<div class="hbar ${cls}" title="${label}"></div>`;
+    return padded.map(b => {
+      if (!b) return `<div class="bar empty" title="No data"></div>`;
+      const cls   = b.allOk ? 'ok' : b.anyOk ? 'partial' : 'down';
+      const label = b.allOk
+        ? `Operational — ${fmt(b.sample?.latency)}`
+        : b.anyOk ? 'Partial outage'
+        : `Down — HTTP ${b.sample?.status || 'timeout'}`;
+      return `<div class="bar ${cls}" title="${label}"></div>`;
     }).join('');
   }
 
+  // ── RENDER SERVICE ────────────────────────────────────
   function renderService(svc) {
-    const statusLabel = { operational: 'Operational', down: 'Down', unknown: 'Unknown' }[svc.status] || 'Unknown';
-    const pct         = uptimePct(svc.history);
-    const pctDisplay  = pct !== null ? pct + '%' : '—';
-    const latestLatency = svc.history[0]?.latency ?? svc.latency;
+    const pct       = uptimePct(svc.history);
+    const statusCls = svc.status || 'unknown';
+    const statusTxt = { operational: 'Operational', down: 'Down', unknown: 'Unknown' }[statusCls] || 'Unknown';
+    const latency   = svc.history?.[0]?.latency ?? svc.latency;
 
     return `
-      <div class="service-card">
-        <div class="service-top">
+      <div class="card">
+        <div class="card-top">
           <div>
-            <div class="service-name">${svc.name}</div>
-            ${svc.public_url !== false ? `<div class="service-url">${svc.url}</div>` : ''}
+            <div class="card-name">${svc.name}</div>
+            ${svc.public_url !== false ? `<div class="card-url">${svc.url}</div>` : ''}
           </div>
-          <div class="service-status">
-            <div class="status-dot ${svc.status}"></div>
-            <span class="status-text ${svc.status}">${statusLabel}</span>
+          <div class="status-pill ${statusCls}">
+            <div class="pill-dot"></div>
+            ${statusTxt}
           </div>
         </div>
-        <div class="service-meta">
-          <div class="meta-item">Latency <span>${formatLatency(latestLatency)}</span></div>
-          <div class="meta-item">Checks <span>${svc.history.length}</span></div>
+
+        <div class="stats">
+          <div class="stat">Latency <strong>${fmt(latency)}</strong></div>
+          <div class="stat">Checks <strong>${svc.history?.length ?? 0}</strong></div>
         </div>
-        <div class="history-wrap">
-          <div class="history-bars">${renderHistoryBars(svc.history)}</div>
-          <div class="history-label"><span>7 days ago</span><span>now</span></div>
+
+        <div class="history">
+          <div class="bars">${buildBars(svc.history || [])}</div>
+          <div class="bars-labels"><span>7 days ago</span><span>now</span></div>
         </div>
+
         <div class="uptime-row">
           <span class="uptime-label">7-day uptime</span>
-          <span class="uptime-pct ${uptimeClass(pct ? parseFloat(pct) : null)}">${pctDisplay}</span>
+          <span class="uptime-pct ${uptimeClass(pct)}">${pct !== null ? pct + '%' : '—'}</span>
         </div>
       </div>`;
   }
 
+  // ── RENDER BANNER ─────────────────────────────────────
   function renderBanner(services, generated) {
-    const banner  = document.getElementById('banner');
-    const title   = document.getElementById('banner-title');
-    const sub     = document.getElementById('banner-sub');
-    const updated = document.getElementById('banner-updated');
-
     const anyDown = services.some(s => s.status === 'down');
     const allOk   = services.every(s => s.status === 'operational');
+    const banner  = document.getElementById('banner');
 
-    banner.className = 'status-banner ' + (anyDown ? 'has-down' : allOk ? 'all-ok' : 'loading');
-    title.textContent = anyDown
+    banner.className = 'banner ' + (anyDown ? 'has-down' : allOk ? 'all-ok' : '');
+    document.getElementById('banner-title').textContent = anyDown
       ? 'Some systems are experiencing issues'
-      : allOk
-        ? 'All systems operational'
-        : 'Status unknown';
-
-    sub.textContent = anyDown
+      : allOk ? 'All systems operational' : 'Status unknown';
+    document.getElementById('banner-sub').textContent = anyDown
       ? services.filter(s => s.status === 'down').map(s => s.name).join(', ') + ' — investigating'
       : 'Everything is running smoothly.';
 
     if (generated && generated !== '1970-01-01T00:00:00.000Z') {
-      updated.textContent = 'Updated ' + timeAgo(generated);
+      document.getElementById('banner-time').textContent = timeAgo(generated);
+      document.getElementById('footer-time').textContent = 'Updated ' + timeAgo(generated);
     }
   }
 
-  // ── FETCH & RENDER ────────────────────────────────────
+  // ── LOAD ──────────────────────────────────────────────
   async function load() {
     try {
-      // Cache-bust so GitHub Pages always serves fresh data
       const res  = await fetch('status.json?t=' + Date.now());
       const data = await res.json();
-
       renderBanner(data.services, data.generated);
       document.getElementById('services').innerHTML = data.services.map(renderService).join('');
-
-      // Refresh every 5 minutes so the page auto-updates without a reload
-      setTimeout(load, 5 * 60 * 1000);
+      setTimeout(load, 60 * 1000);
     } catch (err) {
       document.getElementById('banner-title').textContent = 'Could not load status data';
       document.getElementById('banner-sub').textContent   = 'Try refreshing the page';
-      console.error('Failed to load status.json:', err);
+      console.error(err);
     }
   }
 
