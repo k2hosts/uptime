@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-21T21:46:07.088Z",
+  "generated": "2026-03-21T21:47:07.139Z",
   "services": [
     {
       "id": "playground",
@@ -8,8 +8,15 @@
       "public_url": true,
       "status": "operational",
       "maintenance": false,
-      "latency": 129,
+      "latency": 32,
       "history": [
+        {
+          "ts": "2026-03-21T21:47:07.139Z",
+          "ok": true,
+          "maintenance": false,
+          "status": 200,
+          "latency": 32
+        },
         {
           "ts": "2026-03-21T21:46:07.088Z",
           "ok": true,
@@ -4509,10 +4516,17 @@
       "name": "BareAI API Worker",
       "url": "https://oops-proxy.deandre6156.workers.dev",
       "public_url": false,
-      "status": "operational",
-      "maintenance": false,
-      "latency": 204,
+      "status": "maintenance",
+      "maintenance": true,
+      "latency": 50,
       "history": [
+        {
+          "ts": "2026-03-21T21:47:07.139Z",
+          "ok": true,
+          "maintenance": true,
+          "status": 503,
+          "latency": 50
+        },
         {
           "ts": "2026-03-21T21:46:07.088Z",
           "ok": true,
