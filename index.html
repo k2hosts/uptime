@@ -304,10 +304,21 @@
       if (!b) return `<div class="bar empty" title="No data"></div>`;
       const allMaintenance = b.slice.every(e => e.maintenance);
       const cls   = allMaintenance ? 'maintenance' : b.allOk ? 'ok' : b.anyOk ? 'partial' : 'down';
-      const label = b.allOk
-        ? `Operational — ${fmt(b.sample?.latency)}`
+
+      // Format the timestamp from the sample entry
+      const ts = b.sample?.ts
+        ? new Date(b.sample.ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : null;
+
+      const stateLabel = allMaintenance
+        ? 'Maintenance'
+        : b.allOk ? 'Operational'
         : b.anyOk ? 'Partial outage'
-        : `Down — HTTP ${b.sample?.status || 'timeout'}`;
+        : 'Down';
+
+      const detail = b.allOk && !allMaintenance ? ` — ${fmt(b.sample?.latency)}` : b.anyOk && !allMaintenance && !b.allOk ? '' : b.sample?.status ? ` — HTTP ${b.sample.status}` : '';
+
+      const label = [ts, stateLabel + detail].filter(Boolean).join('\n');
       return `<div class="bar ${cls}" title="${label}"></div>`;
     }).join('');
   }
